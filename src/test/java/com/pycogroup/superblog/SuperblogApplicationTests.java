@@ -1,0 +1,13 @@
+package com.pycogroup.superblog;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class SuperblogApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
