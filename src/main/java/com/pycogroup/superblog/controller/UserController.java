@@ -1,17 +1,18 @@
 package com.pycogroup.superblog.controller;
 
 import com.pycogroup.superblog.api.UsersApi;
-import com.pycogroup.superblog.api.model.*;
-import com.pycogroup.superblog.model.Article;
+import com.pycogroup.superblog.api.model.CreateUserRequest;
+import com.pycogroup.superblog.api.model.ObjectCreationSuccessResponse;
+import com.pycogroup.superblog.api.model.UserListResponse;
+import com.pycogroup.superblog.api.model.UserResponseModel;
 import com.pycogroup.superblog.model.User;
-import com.pycogroup.superblog.repository.UserRepository;
 import com.pycogroup.superblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;

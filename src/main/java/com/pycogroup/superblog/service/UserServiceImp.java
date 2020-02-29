@@ -1,7 +1,6 @@
 package com.pycogroup.superblog.service;
 
 import com.pycogroup.superblog.model.User;
-import com.pycogroup.superblog.repository.ArticleRepository;
 import com.pycogroup.superblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
