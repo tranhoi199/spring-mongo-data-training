@@ -9,27 +9,20 @@ paths:
   /articles:
     get:
       tags:
-        - article
+        - getArticleList
       summary: Get all articles
       operationId: getArticleList
       responses:
         '200':
-          description: Get article successfully
+          description: Get article list successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArticleListResponse'
-        '500':
-          description: Unexpected technical errors
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
-              examples:
-                technical_error:
-                  $ref: '#/components/examples/InternalServerError'
-
     post:
+      tags:
+        - createArticle
+      summary: Create article
       operationId: createArticle
       requestBody:
         description: Create article
@@ -45,9 +38,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/ObjectCreationSuccessResponse'
 
+  /users:
+    get:
+      tags:
+        - getUserList
+      summary: Get all users
+      operationId: getUserList
+      responses:
+        '200':
+          description: Get user list successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
 
+    post:
+      tags:
+        - createUser
+      summary: Create user
+      operationId: createUser
+      requestBody:
+        description: Create user
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: Create user successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectCreationSuccessResponse'
 components:
   schemas:
+    UserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponseModel'
+    UserResponseModel:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+
     ArticleListResponse:
       type: object
       properties:
@@ -74,6 +113,13 @@ components:
         content:
           type: string
         authorId:
+          type: string
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
           type: string
 
 

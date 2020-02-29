@@ -1,28 +1,52 @@
 package com.pycogroup.superblog.controller;
 
+import com.pycogroup.superblog.api.UsersApi;
+import com.pycogroup.superblog.api.model.*;
+import com.pycogroup.superblog.model.Article;
 import com.pycogroup.superblog.model.User;
 import com.pycogroup.superblog.repository.UserRepository;
+import com.pycogroup.superblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
 @Slf4j
-public class UserController {
+public class UserController implements UsersApi {
 	@Autowired
-	private UserRepository userRepository;
+	private UserService userService;
 
-	@GetMapping(value = "/")
-	public List<User> getAllUsers() {
-		return Collections.emptyList();
+	@Autowired
+	private ModelMapper modelMapper;
+
+	@Override
+	public ResponseEntity<UserListResponse> getUserList() {
+		List<User> userList = userService.getAllUsers();
+		return buildArticleListResponse(userList);
 	}
-	@PostMapping(value = "/")
-	public User createUser(@RequestBody User user) {
-		log.info("Saving user.");
-		return userRepository.save(user);
+
+	@Override
+	public ResponseEntity<ObjectCreationSuccessResponse> createUser(@Valid CreateUserRequest createUserRequest) {
+		User user = modelMapper.map(createUserRequest, User.class);
+		User persistUser = userService.createUser(user);
+		ObjectCreationSuccessResponse result = new ObjectCreationSuccessResponse();
+		result.setId(persistUser.getId());
+		result.setResponseCode(HttpStatus.CREATED.value());
+		return new ResponseEntity(result, HttpStatus.CREATED);
+
+	}
+
+	private ResponseEntity<UserListResponse> buildArticleListResponse(List<User> userList) {
+		UserListResponse userListResponse = new UserListResponse();
+		if(userList != null) {
+			userList.forEach(item -> userListResponse.addUsersItem(modelMapper.map(item, UserResponseModel.class)));
+		}
+		return new ResponseEntity(userListResponse, HttpStatus.OK);
 	}
 }
