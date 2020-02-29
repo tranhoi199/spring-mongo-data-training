@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  description: API specification for SuperBlog microservice
+  version: v3
+  title: SuperBlog microservice API
+servers:
+  - url: http://localhost:8080/
+paths:
+  /articles:
+    get:
+      tags:
+        - article
+      summary: Get all articles
+      operationId: getArticleList
+      responses:
+        '200':
+          description: Get article successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleListResponse'
+        '500':
+          description: Unexpected technical errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              examples:
+                technical_error:
+                  $ref: '#/components/examples/InternalServerError'
+
+    post:
+      operationId: createArticle
+      requestBody:
+        description: Create article
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateArticleRequest'
+      responses:
+        '200':
+          description: Create article successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectCreationSuccessResponse'
+
+
+components:
+  schemas:
+    ArticleListResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArticleResponseModel'
+    ArticleResponseModel:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        authorName:
+          type: string
+        authorId:
+          type: string
+    CreateArticleRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        authorId:
+          type: string
+
+
+    ObjectCreationSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        responseCode:
+          type: integer
+
+    ApiError:
+      type: object
+      properties:
+        faults:
+          type: array
+          items:
+            $ref: "#/components/schemas/Fault"
+        responseCode:
+          type: integer
+    Fault:
+      type: object
+      properties:
+        internalMessage:
+          type: string
+        code:
+          type: integer
+        userMessage:
+          type: string
+
+  examples:
+    InternalServerError:
+      value:
+        responseCode: 500
+        faults:
+          -:
+          userMessage: There're some error when processing this request. Please retry again or contact the site administrator for supporting
+          internalMessage: Internal server error
+          code: 1000
+          responseCode: 500

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 @Slf4j
 public class UserController {
 	@Autowired
