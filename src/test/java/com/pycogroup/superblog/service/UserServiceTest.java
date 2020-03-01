@@ -14,44 +14,37 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ArticleServiceTest {
-	private static final int INIT_ARTICLE_NUMBER = 5;
-
-	@Autowired
-	private ArticleRepository articleRepository;
+public class UserServiceTest {
+	private static final String TEST_USER_EMAIL = "test@local";
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-
 	@Autowired
-	private ArticleService articleService;
+	private UserService userService;
 
 	@Before
 	public void init() {
-		mongoTemplate.remove(Article.class).all();
 		mongoTemplate.remove(User.class).all();
-
-		User author = mongoTemplate.save(User.builder()
+		mongoTemplate.save(User.builder()
 			.name(RandomStringUtils.random(40))
-			.email("fake"+RandomStringUtils.randomAlphabetic(5)+ "@.local")
+			.email(TEST_USER_EMAIL)
 			.build());
-
-		for (int i = 0; i < INIT_ARTICLE_NUMBER; i++) {
-			Article article = Article.builder()
-				.content(RandomStringUtils.random(40))
-				.title(RandomStringUtils.random(500))
-				.author(author)
-				.build();
-			mongoTemplate.save(article);
-		}
 	}
 
 	@Test
 	public void testFindAllMustReturnEnoughQuantity() {
-		List<Article> articleList = articleService.getAllArticles();
-		Assert.assertEquals(INIT_ARTICLE_NUMBER, articleList.size());
+		List<User> userList = userService.getAllUsers();
+		Assert.assertEquals(1, userList.size());
+	}
+
+	@Test
+	public void testFindByExistEmailMustReturnResult() {
+		User user = userService.findUserByEmail(TEST_USER_EMAIL);
+		Assert.assertNotNull(user);
+		Assert.assertEquals(TEST_USER_EMAIL, user.getEmail());
 	}
 }

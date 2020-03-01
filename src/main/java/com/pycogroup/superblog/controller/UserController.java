@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class UserController implements UsersApi {
 	@Override
 	public ResponseEntity<UserListResponse> getUserList() {
 		List<User> userList = userService.getAllUsers();
-		return buildArticleListResponse(userList);
+		return buildUserListResponse(userList);
 	}
 
 	@Override
@@ -40,10 +41,19 @@ public class UserController implements UsersApi {
 		result.setId(persistUser.getId().toString());
 		result.setResponseCode(HttpStatus.CREATED.value());
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
-
 	}
 
-	private ResponseEntity<UserListResponse> buildArticleListResponse(List<User> userList) {
+	@Override
+	public ResponseEntity<UserListResponse> findUserByEmail(@Valid String email) {
+		User user = userService.findUserByEmail(email);
+		List<User> userList = new ArrayList<>();
+		if(user != null) {
+			userList.add(user);
+		}
+		return buildUserListResponse(userList);
+	}
+
+	private ResponseEntity<UserListResponse> buildUserListResponse(List<User> userList) {
 		UserListResponse userListResponse = new UserListResponse();
 		if(userList != null) {
 			userList.forEach(item -> userListResponse.addUsersItem(modelMapper.map(item, UserResponseModel.class)));

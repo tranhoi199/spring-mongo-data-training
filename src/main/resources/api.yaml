@@ -70,6 +70,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObjectCreationSuccessResponse'
+  /users/find-by-email:
+    get:
+      tags:
+        - search user by email
+      summary: Search user by email
+      operationId: findUserByEmail
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: Search user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+
 components:
   schemas:
     UserListResponse:
