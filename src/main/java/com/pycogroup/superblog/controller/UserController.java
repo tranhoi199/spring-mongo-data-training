@@ -37,9 +37,9 @@ public class UserController implements UsersApi {
 		User user = modelMapper.map(createUserRequest, User.class);
 		User persistUser = userService.createUser(user);
 		ObjectCreationSuccessResponse result = new ObjectCreationSuccessResponse();
-		result.setId(persistUser.getId());
+		result.setId(persistUser.getId().toString());
 		result.setResponseCode(HttpStatus.CREATED.value());
-		return new ResponseEntity(result, HttpStatus.CREATED);
+		return new ResponseEntity<>(result, HttpStatus.CREATED);
 
 	}
 
@@ -48,6 +48,6 @@ public class UserController implements UsersApi {
 		if(userList != null) {
 			userList.forEach(item -> userListResponse.addUsersItem(modelMapper.map(item, UserResponseModel.class)));
 		}
-		return new ResponseEntity(userListResponse, HttpStatus.OK);
+		return new ResponseEntity<>(userListResponse, HttpStatus.OK);
 	}
 }
