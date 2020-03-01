@@ -22,4 +22,8 @@ public class User {
 	@Setter
 	private String email;
 
+	@Getter
+	@Setter
+	private Address address;
+
 }
