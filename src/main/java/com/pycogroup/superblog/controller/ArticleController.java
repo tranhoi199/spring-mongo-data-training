@@ -1,7 +1,9 @@
 package com.pycogroup.superblog.controller;
 
 import com.pycogroup.superblog.api.ArticlesApi;
-import com.pycogroup.superblog.api.model.*;
+import com.pycogroup.superblog.api.model.ArticleListResponse;
+import com.pycogroup.superblog.api.model.ObjectCreationSuccessResponse;
+import com.pycogroup.superblog.api.model.CreateArticleRequest;
 import com.pycogroup.superblog.model.Article;
 import com.pycogroup.superblog.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +38,9 @@ public class ArticleController implements ArticlesApi {
 
 	private ResponseEntity<ArticleListResponse> buildArticleListResponse(List<Article> articleList) {
 		ArticleListResponse articleListResponse = new ArticleListResponse();
-		if(articleList != null) {
-			articleList.forEach(item->articleListResponse.addArticlesItem(modelMapper.map(item, ArticleResponseModel.class)));
+
+		if (articleList != null) {
+			articleList.forEach(item -> articleListResponse.addArticlesItem(modelMapper.map(item, com.pycogroup.superblog.api.model.ArticleResponseModel.class)));
 		}
 		return new ResponseEntity(articleListResponse, HttpStatus.OK);
 	}
