@@ -1,5 +1,6 @@
 package com.pycogroup.superblog.model;
 
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "admin_users")
 @Builder
+@QueryEntity
 public class User {
 	@Id
 	@Getter
