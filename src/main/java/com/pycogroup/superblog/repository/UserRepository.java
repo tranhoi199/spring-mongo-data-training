@@ -7,7 +7,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
-public interface UserRepository extends MongoRepository<User, String>, QuerydslPredicateExecutor<User> {
+public interface UserRepository extends MongoRepository<User, String>, QuerydslPredicateExecutor<User>, CustomUserRepository {
 	User findByEmail(String email);
 
 	@Query("{'address.country': ?0}")

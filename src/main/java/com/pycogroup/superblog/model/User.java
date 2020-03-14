@@ -28,4 +28,7 @@ public class User {
 	@Setter
 	private Address address;
 
+	@Getter
+	@Setter
+	private Boolean enabled;
 }
