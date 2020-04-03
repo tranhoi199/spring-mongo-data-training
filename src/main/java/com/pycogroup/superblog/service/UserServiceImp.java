@@ -1,5 +1,6 @@
 package com.pycogroup.superblog.service;
 
+import com.pycogroup.superblog.model.QUser;
 import com.pycogroup.superblog.model.User;
 import com.pycogroup.superblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,12 @@ public class UserServiceImp implements UserService {
 	@Override
 	public User findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
+	}
+
+	@Override
+	public List<User> findUsersByPrefixName(String prefix) {
+		QUser userQuery = QUser.user;
+		return (List<User>) userRepository.findAll(userQuery.name.startsWith(prefix));
+
 	}
 }

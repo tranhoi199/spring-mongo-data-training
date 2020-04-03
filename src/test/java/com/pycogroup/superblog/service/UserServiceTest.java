@@ -28,9 +28,18 @@ public class UserServiceTest {
 	public void init() {
 		mongoTemplate.remove(User.class).all();
 		mongoTemplate.save(User.builder()
-			.name(RandomStringUtils.random(40))
+			.name("A" + RandomStringUtils.random(40))
 			.email(TEST_USER_EMAIL)
 			.build());
+		mongoTemplate.save(User.builder()
+			.name("A" + RandomStringUtils.random(40))
+			.email(TEST_USER_EMAIL)
+			.build());
+		mongoTemplate.save(User.builder()
+			.name("B" + RandomStringUtils.random(40))
+			.email(TEST_USER_EMAIL)
+			.build());
+
 	}
 
 	@Test
@@ -44,5 +53,14 @@ public class UserServiceTest {
 		User user = userService.findUserByEmail(TEST_USER_EMAIL);
 		Assert.assertNotNull(user);
 		Assert.assertEquals(TEST_USER_EMAIL, user.getEmail());
+	}
+
+	@Test
+	public void testFindUsersByPrefixNameMustReturnCorrectResult() {
+		List<User> userList = userService.findUsersByPrefixName("A");
+		Assert.assertEquals(2, userList.size());
+		for (User user: userList) {
+			Assert.assertTrue(user.getName().startsWith("A"));
+		}
 	}
 }
