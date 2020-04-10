@@ -33,11 +33,11 @@ public class UserServiceTest {
 			.build());
 		mongoTemplate.save(User.builder()
 			.name("A" + RandomStringUtils.random(40))
-			.email(TEST_USER_EMAIL)
+			.email("A" + RandomStringUtils.random(40) + "@local.email")
 			.build());
 		mongoTemplate.save(User.builder()
 			.name("B" + RandomStringUtils.random(40))
-			.email(TEST_USER_EMAIL)
+			.email("B" + RandomStringUtils.random(40) + "@local.email")
 			.build());
 
 	}
@@ -45,7 +45,7 @@ public class UserServiceTest {
 	@Test
 	public void testFindAllMustReturnEnoughQuantity() {
 		List<User> userList = userService.getAllUsers();
-		Assert.assertEquals(1, userList.size());
+		Assert.assertEquals(3, userList.size());
 	}
 
 	@Test

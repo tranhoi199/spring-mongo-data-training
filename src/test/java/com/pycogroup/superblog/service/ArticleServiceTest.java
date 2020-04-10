@@ -12,19 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ArticleServiceTest {
 	private static final int INIT_ARTICLE_NUMBER = 5;
 
 	@Autowired
-	private ArticleRepository articleRepository;
-
-	@Autowired
 	private MongoTemplate mongoTemplate;
-
 
 	@Autowired
 	private ArticleService articleService;
@@ -33,12 +29,10 @@ public class ArticleServiceTest {
 	public void init() {
 		mongoTemplate.remove(Article.class).all();
 		mongoTemplate.remove(User.class).all();
-
 		User author = mongoTemplate.save(User.builder()
 			.name(RandomStringUtils.random(40))
 			.email("fake"+RandomStringUtils.randomAlphabetic(5)+ "@.local")
 			.build());
-
 		for (int i = 0; i < INIT_ARTICLE_NUMBER; i++) {
 			Article article = Article.builder()
 				.content(RandomStringUtils.random(40))
