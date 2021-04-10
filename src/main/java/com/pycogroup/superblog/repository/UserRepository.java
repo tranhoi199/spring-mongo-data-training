@@ -11,6 +11,7 @@ public interface UserRepository extends MongoRepository<User, String>,
 								CustomUserRepository,
 								QuerydslPredicateExecutor<User> {
 	User findByEmail(String email);
+	User findUsersByEmail(String email);
 	@Query("{'address.country': ?0}")
 	List<User> findByCountry(final String country);
 }
