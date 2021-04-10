@@ -53,6 +53,7 @@ public class UserServiceImp implements UserService {
 	@Override
 	public List<User> findUsersByPrefixName(String prefix) {
 		QUser userQuery = QUser.user;
+
 		return (List<User>) userRepository.findAll(userQuery.name.startsWith(prefix));
 	}
 }

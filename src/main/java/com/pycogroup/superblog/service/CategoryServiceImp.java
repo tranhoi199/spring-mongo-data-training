@@ -50,8 +50,13 @@ public class CategoryServiceImp implements CategoryService{
     @Override
     public Category updateCategoryById(ObjectId id, Category updateCategory) {
         Category existCategory = findCategoryById(id);
-        existCategory.setCategoryname(updateCategory.getCategoryname());
-        existCategory.setDescription(updateCategory.getDescription());
+        if(updateCategory.getCategoryname() != ""){
+            existCategory.setCategoryname(updateCategory.getCategoryname());
+        }
+        if(updateCategory.getDescription() != ""){
+            existCategory.setDescription(updateCategory.getDescription());
+        }
+
         categoryRepository.save(existCategory);
         return existCategory;
 

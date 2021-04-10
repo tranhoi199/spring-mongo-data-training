@@ -3,6 +3,7 @@ package com.pycogroup.superblog.controller;
 import com.pycogroup.superblog.api.CategoriesApi;
 import com.pycogroup.superblog.api.model.*;
 import com.pycogroup.superblog.model.Category;
+import com.pycogroup.superblog.service.ArticleService;
 import com.pycogroup.superblog.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -22,6 +23,8 @@ public class CategoryController implements CategoriesApi {
     CategoryService categoryService;
 
     @Autowired
+    ArticleService articleService;
+    @Autowired
     private ModelMapper modelMapper;
     @Override
     public ResponseEntity<CategoryResponseModel> createCategory(@Valid CreateCategoryRequest createCategoryRequest) {
@@ -36,7 +39,13 @@ public class CategoryController implements CategoriesApi {
 
     @Override
     public ResponseEntity<ObjectDeletionSuccessResponse> deleteCategory(String cateId) {
+        //check if category in database
+        Category category = categoryService.findCategoryById(new ObjectId(cateId));
+        //check if we can delete a category
+        Boolean flag = articleService.getArticlesRelateToCategory(new ObjectId(cateId));
+
         categoryService.findAndDeleteCategoryById(new ObjectId(cateId));
+
         ObjectDeletionSuccessResponse result = new ObjectDeletionSuccessResponse();
         result.setId(cateId);
         result.responseCode(200);
@@ -71,8 +80,11 @@ public class CategoryController implements CategoriesApi {
     public ResponseEntity<CategoryResponseModel> updateCategory(String cateId, @Valid UpdateCategoryRequest updateCategoryRequest) {
         Category category = modelMapper.map(updateCategoryRequest, Category.class);
         Category updatedCategory = categoryService.updateCategoryById(new ObjectId(cateId), category);
-
         CategoryResponseModel result = new CategoryResponseModel();
+
+        //update articles related to this category.
+        articleService.updateArticleRelateToCategory(new ObjectId(cateId));
+
         result.setDescription(updatedCategory.getDescription());
         result.setCategoryname(updatedCategory.getCategoryname());
         result.setId(updatedCategory.getId().toString());

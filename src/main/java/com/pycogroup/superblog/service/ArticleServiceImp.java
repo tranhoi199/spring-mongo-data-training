@@ -1,10 +1,13 @@
 package com.pycogroup.superblog.service;
 
 import com.pycogroup.superblog.exception.ArticleNotFound;
+import com.pycogroup.superblog.exception.CategoryRefError;
 import com.pycogroup.superblog.model.Article;
 import com.pycogroup.superblog.model.Category;
+import com.pycogroup.superblog.model.QArticle;
 import com.pycogroup.superblog.model.User;
 import com.pycogroup.superblog.repository.ArticleRepository;
+import com.pycogroup.superblog.repository.CategoryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ public class ArticleServiceImp implements ArticleService {
 	@Autowired
 	private ArticleRepository articleRepository;
 
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@Override
 	public List<Article> getAllArticles() {
@@ -69,5 +74,25 @@ public class ArticleServiceImp implements ArticleService {
 		article.setTitle(title);
 		articleRepository.save(article);
 		return article;
+	}
+
+	@Override
+	public Boolean getArticlesRelateToCategory(ObjectId cateId) {
+		QArticle qArticle = QArticle.article;
+		Iterable<Article> articles = articleRepository.findAll(qArticle.category.id.eq(cateId));
+		if(articles.iterator().hasNext()){
+			throw new CategoryRefError(cateId.toString());
+		}
+		return true;
+	}
+
+	@Override
+	public void updateArticleRelateToCategory(ObjectId cateid) {
+		QArticle qArticle = QArticle.article;
+		Iterable<Article> articles = articleRepository.findAll(qArticle.category.id.eq(cateid));
+		Category category = categoryRepository.findCategoryById(cateid);
+
+		articles.forEach(item -> item.setCategory(category));
+		articleRepository.saveAll(articles);
 	}
 }

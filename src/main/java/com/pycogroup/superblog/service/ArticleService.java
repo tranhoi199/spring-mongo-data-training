@@ -14,5 +14,7 @@ public interface ArticleService {
 	Article addUserToArticle(User user, Article articleId);
 	Article addCategoryToArticle(Article article, Category category);
 	Article findAndUpdateArticleById(ObjectId articleId, String title, String content);
+	Boolean getArticlesRelateToCategory(ObjectId cateId);
+	void updateArticleRelateToCategory(ObjectId cateid);
 	void findAndDeleteArticleById(ObjectId articleId);
 }
