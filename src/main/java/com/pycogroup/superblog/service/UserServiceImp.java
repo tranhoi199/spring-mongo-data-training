@@ -2,9 +2,11 @@ package com.pycogroup.superblog.service;
 
 import com.pycogroup.superblog.exception.AlreadyCreateUser;
 import com.pycogroup.superblog.exception.EmailNotFound;
+import com.pycogroup.superblog.exception.UserIdNotFound;
 import com.pycogroup.superblog.model.QUser;
 import com.pycogroup.superblog.model.User;
 import com.pycogroup.superblog.repository.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,15 @@ public class UserServiceImp implements UserService {
 			throw new EmailNotFound(email);
 		}
 		return userRepository.findUsersByEmail(email);
+	}
+
+	@Override
+	public User findUserById(ObjectId id) {
+		User user = userRepository.findUserById(id);
+		if(user == null){
+			throw new UserIdNotFound(id.toString());
+		}
+		return user;
 	}
 
 	@Override

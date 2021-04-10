@@ -6,6 +6,8 @@ import com.pycogroup.superblog.model.Article;
 import com.pycogroup.superblog.model.Category;
 import com.pycogroup.superblog.model.User;
 import com.pycogroup.superblog.service.ArticleService;
+import com.pycogroup.superblog.service.CategoryService;
+import com.pycogroup.superblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -24,6 +26,12 @@ public class ArticleController implements ArticlesApi {
 	private ArticleService articleService;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private CategoryService categoryService;
+
+	@Autowired
 	private ModelMapper modelMapper;
 
 	@Override
@@ -34,42 +42,54 @@ public class ArticleController implements ArticlesApi {
 
 	@Override
 	public ResponseEntity<ArticleResponseModel> updateArticle(String articleId, @Valid UpdateArticleRequest updateArticleRequest) {
-		return null;
+		Article existArticle = articleService.findAndUpdateArticleById(new ObjectId(articleId), updateArticleRequest.getTitle(), updateArticleRequest.getContent());
+		ArticleResponseModel result = modelMapper.map(existArticle, ArticleResponseModel.class);
+		return new ResponseEntity<>(result, HttpStatus.FOUND);
 	}
 
 	@Override
 	public ResponseEntity<ObjectCreationSuccessResponse> createArticle(@Valid CreateArticleRequest createArticleRequest) {
-//		//get authorId from request
-//		String authorId = createArticleRequest.getAuthorId();
-//
-//		String categoryId = createArticleRequest.getCategory();
-//		// map Article to CreateArticleRequest
-//		Article article = modelMapper.map(createArticleRequest, Article.class);
-//		Article persistArticle = articleService.createArticle(article);
-//
-//		//embedded user to a article
-//		User persistUser = userService.findById(authorId);
-//		Article updateArticle = articleService.addUserToArticle(persistUser, persistArticle);
-//
-//		// add categories to a article
-//		Category category = categoryService.findCategoryById(new ObjectId(categoryId));
-//		articleService.addCategoryToArticle(article, category);
-//
-//		ObjectCreationSuccessResponse result = new ObjectCreationSuccessResponse();
-//		result.setId(persistArticle.getId().toString());
-//		result.setResponseCode(HttpStatus.CREATED.value());
-//		return new ResponseEntity<>(result, HttpStatus.CREATED);
-		return null;
+		//get authorId from request
+		String authorId = createArticleRequest.getAuthorId();
+		String categoryId = createArticleRequest.getCategory();
+		System.out.println("authorId:"+authorId);
+		System.out.println("categoryId:"+categoryId);
+		// map Article to CreateArticleRequest
+		Article article = modelMapper.map(createArticleRequest, Article.class);
+
+		User persistUser = userService.findUserById(new ObjectId(authorId));
+		Category category = categoryService.findCategoryById(new ObjectId(categoryId));
+
+		Article persistArticle = articleService.createArticle(article);
+
+		//embedded user to a article
+		Article updateArticle = articleService.addUserToArticle(persistUser, persistArticle);
+
+		// add categories to a article
+		articleService.addCategoryToArticle(article, category);
+
+		ObjectCreationSuccessResponse result = new ObjectCreationSuccessResponse();
+		result.setId(persistArticle.getId().toString());
+		result.setResponseCode(HttpStatus.CREATED.value());
+		return new ResponseEntity<>(result, HttpStatus.CREATED);
+
 	}
 
 	@Override
 	public ResponseEntity<ObjectDeletionSuccessResponse> deleteArticle(String articleId) {
-		return null;
+		articleService.findAndDeleteArticleById(new ObjectId(articleId));
+		ObjectDeletionSuccessResponse result = new ObjectDeletionSuccessResponse();
+		result.setId(articleId);
+		result.setResponseCode(HttpStatus.OK.value());
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@Override
 	public ResponseEntity<ArticleResponseModel> getArticle(String articleId) {
-		return null;
+
+		Article existArticle = articleService.findArticleById(new ObjectId(articleId));
+		ArticleResponseModel result = modelMapper.map(existArticle, ArticleResponseModel.class);
+		return new ResponseEntity<>(result, HttpStatus.FOUND);
 	}
 
 	private ResponseEntity<ArticleListResponse> buildArticleListResponse(List<Article> articleList) {

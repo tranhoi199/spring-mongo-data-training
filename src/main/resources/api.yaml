@@ -285,6 +285,10 @@ components:
           type: string
         authorId:
           type: string
+        id:
+          type: string
+        category:
+          $ref: '#/components/schemas/CategoryResponseModel'
     CreateArticleRequest:
       type: object
       properties:

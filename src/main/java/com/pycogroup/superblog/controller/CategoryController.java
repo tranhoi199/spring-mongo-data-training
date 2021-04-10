@@ -26,7 +26,6 @@ public class CategoryController implements CategoriesApi {
     @Override
     public ResponseEntity<CategoryResponseModel> createCategory(@Valid CreateCategoryRequest createCategoryRequest) {
         Category category = modelMapper.map(createCategoryRequest, Category.class);
-        System.out.println("category description"+category.getDescription());
         Category persistCate = categoryService.createCategory(category);
         CategoryResponseModel result = new CategoryResponseModel();
         result.setCategoryname(persistCate.getCategoryname());
