@@ -42,8 +42,6 @@ public class CategoryController implements CategoriesApi {
         //check if category in database
         Category category = categoryService.findCategoryById(new ObjectId(cateId));
         //check if we can delete a category
-        Boolean flag = articleService.getArticlesRelateToCategory(new ObjectId(cateId));
-
         categoryService.findAndDeleteCategoryById(new ObjectId(cateId));
 
         ObjectDeletionSuccessResponse result = new ObjectDeletionSuccessResponse();
@@ -83,7 +81,7 @@ public class CategoryController implements CategoriesApi {
         CategoryResponseModel result = new CategoryResponseModel();
 
         //update articles related to this category.
-        articleService.updateArticleRelateToCategory(new ObjectId(cateId));
+//        articleService.updateArticleRelateToCategory(new ObjectId(cateId));
 
         result.setDescription(updatedCategory.getDescription());
         result.setCategoryname(updatedCategory.getCategoryname());

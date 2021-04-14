@@ -14,6 +14,9 @@ import java.util.List;
 public class CategoryServiceImp implements CategoryService{
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    ArticleService articleService;
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -41,6 +44,7 @@ public class CategoryServiceImp implements CategoryService{
     @Override
     public void findAndDeleteCategoryById(ObjectId id) {
         Category existCategory = categoryRepository.findCategoryById(id);
+        Boolean isConflict = articleService.getArticlesRelateToCategory(id);
         if(existCategory == null){
             throw new CategoryNotFound(id.toString());
         }
@@ -56,9 +60,8 @@ public class CategoryServiceImp implements CategoryService{
         if(updateCategory.getDescription() != ""){
             existCategory.setDescription(updateCategory.getDescription());
         }
-
         categoryRepository.save(existCategory);
+        articleService.updateArticleRelateToCategory(id);
         return existCategory;
-
     }
 }

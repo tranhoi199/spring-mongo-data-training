@@ -45,13 +45,13 @@ public class UserController implements UsersApi {
 
 	@Override
 	public ResponseEntity<UserListResponse> findUserByEmail(@Valid String email) {
-		System.out.println("email:"+email);
+//		System.out.println("email:"+email);
 		User user = userService.findUserByEmail(email);
 		List<User> userList = new ArrayList<>();
 		if(user != null) {
 			userList.add(user);
 		}
-		System.out.println("log user:"+user);
+//		System.out.println("log user:"+user);
 		return buildUserListResponse(userList);
 	}
 

@@ -1,10 +1,8 @@
 package com.pycogroup.superblog.model;
 
+import com.pycogroup.superblog.api.model.CategoryResponseModel;
 import com.querydsl.core.annotations.QueryEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @QueryEntity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Category {
     @Id
     @Getter
@@ -25,4 +24,6 @@ public class Category {
     @Getter
     @Setter
     private String description;
+
+
 }

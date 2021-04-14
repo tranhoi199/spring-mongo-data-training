@@ -8,6 +8,7 @@ import com.pycogroup.superblog.model.QArticle;
 import com.pycogroup.superblog.model.User;
 import com.pycogroup.superblog.repository.ArticleRepository;
 import com.pycogroup.superblog.repository.CategoryRepository;
+import com.pycogroup.superblog.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,28 +21,21 @@ public class ArticleServiceImp implements ArticleService {
 	private ArticleRepository articleRepository;
 
 	@Autowired
-	private CategoryRepository categoryRepository;
+	private CategoryService categoryService;
+
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public List<Article> getAllArticles() {
 		return articleRepository.findAll();
 	}
 
-	@Override
-	public Article createArticle(Article article) {
-		return articleRepository.save(article);
-	}
+
 
 	@Override
 	public Article addUserToArticle(User user, Article article){
 		article.setAuthor(user);
-		articleRepository.save(article);
-		return article;
-	}
-
-	@Override
-	public Article addCategoryToArticle(Article article, Category category) {
-		article.setCategory(category);
 		articleRepository.save(article);
 		return article;
 	}
@@ -61,6 +55,24 @@ public class ArticleServiceImp implements ArticleService {
 		if(article == null){
 			throw new ArticleNotFound(articleId.toString());
 		}
+		return article;
+	}
+
+	@Override
+	public Article createArticle(Article article, ObjectId categoryId, ObjectId authorId) {
+		User author = userService.findUserById(authorId);
+		Category category = categoryService.findCategoryById(categoryId);
+		article.setCategory(category);
+		article.setAuthor(author);
+		articleRepository.save(article);
+		return article;
+	}
+
+	@Override
+	public Article updateCategory(Article article, ObjectId cateId){
+		Category category = categoryService.findCategoryById(cateId);
+		article.setCategory(category);
+		articleRepository.save(article);
 		return article;
 	}
 
@@ -90,7 +102,7 @@ public class ArticleServiceImp implements ArticleService {
 	public void updateArticleRelateToCategory(ObjectId cateid) {
 		QArticle qArticle = QArticle.article;
 		Iterable<Article> articles = articleRepository.findAll(qArticle.category.id.eq(cateid));
-		Category category = categoryRepository.findCategoryById(cateid);
+		Category category = categoryService.findCategoryById(cateid);
 
 		articles.forEach(item -> item.setCategory(category));
 		articleRepository.saveAll(articles);

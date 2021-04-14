@@ -10,9 +10,9 @@ import java.util.List;
 public interface ArticleService {
 	List<Article> getAllArticles();
 	Article findArticleById(ObjectId articleId);
-	Article createArticle(Article article);
+	Article createArticle(Article article, ObjectId categoryId, ObjectId authorId);
 	Article addUserToArticle(User user, Article articleId);
-	Article addCategoryToArticle(Article article, Category category);
+	Article updateCategory(Article article, ObjectId cateId);
 	Article findAndUpdateArticleById(ObjectId articleId, String title, String content);
 	Boolean getArticlesRelateToCategory(ObjectId cateId);
 	void updateArticleRelateToCategory(ObjectId cateid);

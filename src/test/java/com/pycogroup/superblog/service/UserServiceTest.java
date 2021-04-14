@@ -1,7 +1,11 @@
 package com.pycogroup.superblog.service;
 
+import com.pycogroup.superblog.exception.AlreadyCreateUser;
+import com.pycogroup.superblog.exception.EmailNotFound;
+import com.pycogroup.superblog.exception.UserIdNotFound;
 import com.pycogroup.superblog.model.User;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,5 +66,43 @@ public class UserServiceTest {
 		for (User user: userList) {
 			Assert.assertTrue(user.getName().startsWith("A"));
 		}
+	}
+
+	@Test
+	public void testFindUSerByIdReturnUser(){
+		List<User> userList = userService.getAllUsers();
+		User user = userList.get(0);
+		ObjectId id = userList.get(0).getId();
+		User findUser = userService.findUserById(id);
+		Assert.assertEquals(id.toString(), findUser.getId().toString());
+	}
+	@Test
+	public void testCreateUSer(){
+		User user = User.builder()
+				.name(RandomStringUtils.random(10))
+				.email(RandomStringUtils.random(20))
+				.build();
+		userService.createUser(user);
+		Assert.assertEquals(4, userService.getAllUsers().size());
+	}
+
+	@Test(expected = AlreadyCreateUser.class)
+	public void testCreateDuplicateUserThrowException(){
+		User user = User.builder()
+				.name(RandomStringUtils.random(10))
+				.email(RandomStringUtils.random(20))
+				.build();
+		userService.createUser(user);
+		userService.createUser(user);
+	}
+
+	@Test(expected = UserIdNotFound.class)
+	public void findUserByInvalidId(){
+		userService.findUserById(ObjectId.get());
+	}
+
+	@Test(expected = EmailNotFound.class)
+	public void findUserByInvalidIdThrowException(){
+		userService.findUserByEmail(RandomStringUtils.random(10));
 	}
 }

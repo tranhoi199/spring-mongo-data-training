@@ -26,12 +26,6 @@ public class ArticleController implements ArticlesApi {
 	private ArticleService articleService;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private CategoryService categoryService;
-
-	@Autowired
 	private ModelMapper modelMapper;
 
 	@Override
@@ -52,22 +46,11 @@ public class ArticleController implements ArticlesApi {
 		//get authorId from request
 		String authorId = createArticleRequest.getAuthorId();
 		String categoryId = createArticleRequest.getCategory();
-		System.out.println("authorId:"+authorId);
-		System.out.println("categoryId:"+categoryId);
+//		System.out.println("authorId:"+authorId);
+//		System.out.println("categoryId:"+categoryId);
 		// map Article to CreateArticleRequest
 		Article article = modelMapper.map(createArticleRequest, Article.class);
-
-		User persistUser = userService.findUserById(new ObjectId(authorId));
-		Category category = categoryService.findCategoryById(new ObjectId(categoryId));
-
-		Article persistArticle = articleService.createArticle(article);
-
-		//embedded user to a article
-		Article updateArticle = articleService.addUserToArticle(persistUser, persistArticle);
-
-		// add categories to a article
-		articleService.addCategoryToArticle(article, category);
-
+		Article persistArticle = articleService.createArticle(article, new ObjectId(categoryId), new ObjectId(authorId));
 		ObjectCreationSuccessResponse result = new ObjectCreationSuccessResponse();
 		result.setId(persistArticle.getId().toString());
 		result.setResponseCode(HttpStatus.CREATED.value());
